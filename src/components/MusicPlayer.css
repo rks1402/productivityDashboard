@@ -1,0 +1,292 @@
+.icon-btn-transparent {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s;
+}
+
+.icon-btn-transparent:active {
+  transform: scale(0.9);
+}
+
+/* ... (Existing styles) ... */
+
+.player-card {
+  width: 100%;
+  height: 100%;
+  border-radius: 30px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+  background: #1e1e1e; /* Base color if layers fail */
+}
+
+/* Background Layers */
+.player-bg-default {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, #444, #222);
+  z-index: 0;
+}
+
+@keyframes artFadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.player-bg-art {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 1; /* Above default/prev */
+  animation: artFadeIn 1.2s ease-in-out forwards;
+  box-shadow: none;
+}
+
+.player-bg-prev {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+  /* brightness filter removed for smooth transition */
+}
+
+/* Dark overlay to make text legible on top of image */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom, 
+    rgba(0,0,0,0.1) 0%, 
+    rgba(0,0,0,0.0) 30%, 
+    rgba(0,0,0,0.2) 60%, 
+    rgba(0,0,0,0.8) 100%
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Top Section */
+.top-bar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+
+.artist-pill {
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  padding: 5px 15px 5px 5px;
+  border-radius: 30px;
+}
+
+.artist-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  margin-right: 10px;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.artist-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.artist-name {
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.artist-handle {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.7rem;
+  font-weight: 400;
+}
+
+/* Visual Spacer */
+.visual-spacer {
+  flex-grow: 1;
+  min-height: 20px;
+}
+
+/* Bottom Section */
+.bottom-controls {
+  position: relative;
+  z-index: 2;
+  padding: 0 20px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.progress-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.progress-bar {
+  flex-grow: 1;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  cursor: pointer;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #fff;
+  border-radius: 2px;
+  position: relative;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  right: -4px;
+  top: -3px;
+  width: 10px;
+  height: 10px;
+  background: #fff;
+  border-radius: 50%;
+  opacity: 0; 
+  transition: opacity 0.2s;
+}
+
+.progress-bar:hover .progress-fill::after {
+  opacity: 1;
+}
+
+.time-text {
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 700;
+  width: 45px; /* Adjusted for compactness */
+  flex-shrink: 0;
+  text-align: center;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+/* Volume Section Custom */
+.volume-section-custom {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.volume-side-element {
+  width: 45px; /* Match time-text width */
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.volume-icon {
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+}
+
+.volume-bar-custom {
+  flex-grow: 1;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  cursor: pointer;
+  position: relative;
+}
+
+.volume-fill-custom {
+  height: 100%;
+  background: #fff;
+  border-radius: 2px;
+  position: relative;
+}
+
+.control-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px; /* Slightly tighter */
+  margin-top: 15px;
+  margin-bottom: 5px;
+}
+
+.control-btn {
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(5px);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.1s, background 0.2s;
+  padding: 0; /* Ensure no default padding affects centering */
+}
+
+/* Remove any default SVG margins */
+.control-btn svg {
+  margin: 0;
+  display: block;
+}
+
+/* Optical Alignment for Icons */
+.control-buttons .control-btn.secondary:first-child svg {
+  transform: translateX(-2px); /* Shift Prev icon left to balance visual weight */
+}
+
+.control-buttons .control-btn.secondary:last-child svg {
+  transform: translateX(2px); /* Shift Next icon right to balance visual weight */
+}
+
+.control-btn:active {
+  transform: scale(0.95);
+}
+
+.control-btn.primary {
+  width: 70px;
+  height: 70px;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.control-btn.primary:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.control-btn.secondary {
+  width: 50px;
+  height: 50px;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.control-btn.secondary:hover {
+  background: rgba(0, 0, 0, 0.45);
+}

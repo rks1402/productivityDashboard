@@ -1,0 +1,78 @@
+/* Dashboard Layout Styles */
+
+.dashboard-container {
+  width: 100vw;
+  height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Fallback/Global Background from index.css is used, or define specific here */
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px; /* Fixed width for music player column, flexible for others */
+  grid-template-rows: 1fr 1fr;
+  gap: 20px;
+  width: 100%;
+  max-width: 1200px;
+  height: 90vh;
+}
+
+.dashboard-box {
+  background: rgba(30, 30, 30, 0.6);
+  backdrop-filter: blur(20px);
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  position: relative;
+}
+
+/* Box Specific Adjustments */
+
+/* Box 2 is the Music Player Container */
+.box-2 {
+  background: transparent; /* Let the player card handle the background */
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  align-items: stretch; /* Ensure player fills height if needed */
+}
+
+/* Placeholder Content Styles */
+.dashboard-box h2 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.dashboard-box p {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 900px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .dashboard-box {
+    min-height: 300px;
+  }
+  
+  .box-2 {
+     min-height: 420px; /* Ensure space for player */
+  }
+}
