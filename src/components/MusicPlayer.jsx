@@ -3,14 +3,16 @@ import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX } from 'lucide-rea
 import * as jsmediatags from 'jsmediatags/dist/jsmediatags.min.js';
 import './MusicPlayer.css';
 
-const tracks = [
-  { title: 'Finding Her', src: '/music/Finding Her.mp3' },
-  { title: 'Illuminati', src: '/music/Illuminati.mp3' },
-  { title: "It's You", src: "/music/It's You.mp3" },
-  { title: 'Jo Tum Mere Ho', src: '/music/Jo Tum Mere Ho.mp3' },
-  { title: 'Udd Gaye', src: '/music/Udd Gaye.mp3' },
-  { title: 'Wake Me Up', src: '/music/Wake Me Up.mp3' },
-];
+const musicFiles = import.meta.glob('/src/assets/music/*.mp3', { eager: true, import: 'default' });
+
+const tracks = Object.keys(musicFiles).map((path) => {
+  // Extract filename from path (e.g., "/src/assets/music/Song Name.mp3" -> "Song Name")
+  const fileName = path.split('/').pop().replace('.mp3', '');
+  return {
+    title: fileName,
+    src: musicFiles[path]
+  };
+});
 
 export default function MusicPlayer() {
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
