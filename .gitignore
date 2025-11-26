@@ -131,3 +131,6 @@ dist
 *.njsproj
 *.sln
 *.sw?
+
+# Ignore the music files
+dist/music/
