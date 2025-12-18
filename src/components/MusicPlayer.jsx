@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX } from 'lucide-react';
-import * as jsmediatags from 'jsmediatags/dist/jsmediatags.min.js';
+import jsmediatags from 'jsmediatags/dist/jsmediatags.min.js';
 import './MusicPlayer.css';
 
 const musicFiles = import.meta.glob('/src/assets/music/*.mp3', { eager: true, import: 'default' });
@@ -38,9 +38,15 @@ export default function MusicPlayer() {
   const isKeyDown = useRef({ ArrowLeft: false, ArrowRight: false, ArrowUp: false, ArrowDown: false });
   const prevCoverRef = useRef(null);
 
-  const currentTrack = tracks[currentTrackIndex];
+  // Safe access to current track
+  const currentTrack = tracks.length > 0 ? tracks[currentTrackIndex] : null;
 
   useEffect(() => {
+    if (!currentTrack) {
+        setIsMetadataLoading(false);
+        return;
+    }
+
     setCurrentTime(0);
     setIsMetadataLoading(true);
     // Capture current cover as previous before fetching new one
@@ -51,7 +57,13 @@ export default function MusicPlayer() {
     // to allow the old cover to persist until the new one overrides it.
 
     const fetchMetadata = async () => {
-      if (!window.jsmediatags) {
+      // jsmediatags is imported from the minified script
+      // Depending on the environment, it might be the module itself or window.jsmediatags might be set
+
+      const Reader = jsmediatags?.Reader || window.jsmediatags?.Reader;
+
+      if (!Reader) {
+         console.warn("jsmediatags library not loaded or Reader not found");
          setIsMetadataLoading(false);
          return;
       }
@@ -62,7 +74,7 @@ export default function MusicPlayer() {
         
         const file = new File([blob], `${currentTrack.title}.mp3`, { type: blob.type });
 
-        new window.jsmediatags.Reader(file)
+        new Reader(file)
           .read({
             onSuccess: (tag) => {
               const tags = tag.tags;
@@ -96,9 +108,10 @@ export default function MusicPlayer() {
     };
     
     fetchMetadata();
-  }, [currentTrackIndex]);
+  }, [currentTrackIndex, currentTrack]);
 
   useEffect(() => {
+    if (!audioRef.current) return;
     if (isPlaying) {
       audioRef.current.play().catch(e => console.error("Playback failed:", e));
     } else {
@@ -113,11 +126,15 @@ export default function MusicPlayer() {
   }, [volume]);
 
   const handleTimeUpdate = () => {
-    setCurrentTime(audioRef.current.currentTime);
+    if (audioRef.current) {
+        setCurrentTime(audioRef.current.currentTime);
+    }
   };
 
   const handleLoadedMetadata = () => {
-    setDuration(audioRef.current.duration);
+    if (audioRef.current) {
+        setDuration(audioRef.current.duration);
+    }
   };
 
   const handlePlayPause = () => {
@@ -125,14 +142,17 @@ export default function MusicPlayer() {
   };
 
   const handlePrev = () => {
+    if (tracks.length === 0) return;
     setCurrentTrackIndex((prev) => (prev === 0 ? tracks.length - 1 : prev - 1));
   };
 
   const handleNext = () => {
+    if (tracks.length === 0) return;
     setCurrentTrackIndex((prev) => (prev === tracks.length - 1 ? 0 : prev + 1));
   };
 
   const handleProgressClick = (e) => {
+    if (!audioRef.current) return;
     const progressBar = progressBarRef.current;
     const rect = progressBar.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
@@ -190,6 +210,7 @@ export default function MusicPlayer() {
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.repeat) return; // Ignore repeat events for logic triggering
+      if (tracks.length === 0) return;
 
       switch (e.key) {
         case 'ArrowLeft':
@@ -260,6 +281,7 @@ export default function MusicPlayer() {
     };
 
     const handleKeyUp = (e) => {
+      if (tracks.length === 0) return;
       switch (e.key) {
         case 'ArrowLeft':
           clearTimeout(longPressTimer.current);
@@ -318,6 +340,17 @@ export default function MusicPlayer() {
   const avatarImage = !isMetadataLoading && metadata?.cover 
     ? `url(${metadata.cover})` 
     : 'linear-gradient(135deg, #444, #222)';
+
+  if (!currentTrack) {
+    return (
+        <div className="player-card" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+            <div style={{ textAlign: 'center', color: '#ccc' }}>
+                <p>No music files found.</p>
+                <p style={{ fontSize: '0.8em', marginTop: '10px' }}>Add .mp3 files to <code>src/assets/music/</code></p>
+            </div>
+        </div>
+    );
+  }
 
   return (
     <div className="player-card">
