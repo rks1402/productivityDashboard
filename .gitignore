@@ -2,3 +2,4 @@ node_modules
 dist
 .env
 src/assets/music/
+.DS_Store
